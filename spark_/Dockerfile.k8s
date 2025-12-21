@@ -1,0 +1,67 @@
+FROM python:3.11-bookworm
+
+###########################################
+# 1. 환경 변수
+###########################################
+ENV SPARK_VERSION=3.5.1
+ENV HADOOP_VERSION=3
+
+###########################################
+# 2. 기본 패키지 + Java 설치
+###########################################
+RUN apt-get update && \
+    apt-get install -y curl tar openjdk-17-jre-headless && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-arm64
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+###########################################
+# 3. Apache Spark 설치
+###########################################
+RUN curl -fsSL https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
+    -o /tmp/spark.tgz && \
+    tar -xzf /tmp/spark.tgz -C /opt && \
+    mv /opt/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} /opt/spark && \
+    rm /tmp/spark.tgz
+
+###########################################
+# 4. Python 의존성 설치
+###########################################
+WORKDIR /opt/spark/work-dir
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+###########################################
+# 5. Spark Streaming 코드 복사
+###########################################
+COPY user_activity_streaming.py /opt/spark/work-dir/
+
+# Spark Operator용 경로 (추가)
+RUN mkdir -p /opt/spark/app
+COPY user_activity_streaming.py /opt/spark/app/
+###########################################
+# 6. Kafka Connector JAR 추가
+###########################################
+# Kafka Source + Sink
+ADD https://repo1.maven.org/maven2/org/apache/spark/spark-sql-kafka-0-10_2.12/3.3.1/spark-sql-kafka-0-10_2.12-3.3.1.jar \
+    /opt/spark/jars/
+
+# Kafka Client JAR
+ADD https://repo1.maven.org/maven2/org/apache/kafka/kafka-clients/3.3.1/kafka-clients-3.3.1.jar \
+    /opt/spark/jars/
+
+###########################################
+# 7. 기본 작업 경로 설정
+###########################################
+WORKDIR /opt/spark/work-dir
+
+
+###########################################
+# 8. Spark Operator 호환 ENTRYPOINT 추가 
+###########################################
+COPY entrypoint.sh /opt/spark/bin/entrypoint.sh
+RUN chmod +x /opt/spark/bin/entrypoint.sh
+
+ENTRYPOINT ["/opt/spark/bin/entrypoint.sh"]
+CMD []

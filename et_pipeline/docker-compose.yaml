@@ -41,7 +41,6 @@ services:
     volumes:
       - ./minio-data:/data
 
-
   # Bronze Service (E 단계 → Raw Layer)
   spark-bronze:
     build:
@@ -75,3 +74,82 @@ services:
     command: ["python3", "minio_t.py"]
     # volumes:
     #   - ./checkpoints/silver:/app/checkpoints
+
+  # Gold Service (L 단계 → Gold Layer / Batch)
+  spark-gold:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - spark-silver
+      - minio
+    environment:
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+
+      # (선택) 처리 범위: 하루치 / 특정 hour만
+      # TARGET_DATE: "2025-11-27"
+      # TARGET_HOUR: "7"
+      TARGET_DATE: ""
+      TARGET_HOUR: ""
+    command: ["python3", "minio_l.py"]
+    restart: "no" # Gold는 배치 잡이라 계속 재시작 x
+    volumes:
+      - ./minio_l.py:/app/minio_l.py:ro
+    ports:
+      - "4040:4040"  # Spark UI 포트 매핑
+
+  # ===== Trino + Hive Metastore 추가 =====
+
+  metastore-db:
+    image: postgres:15
+    container_name: metastore-db
+    environment:
+      POSTGRES_DB: metastore
+      POSTGRES_USER: hive
+      POSTGRES_PASSWORD: hive
+    ports:
+      - "5433:5432"
+    volumes:
+      - metastore_db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  hive-metastore:
+    image: apache/hive:4.0.0
+    container_name: hive-metastore
+    environment:
+      SERVICE_NAME: metastore
+      DB_DRIVER: postgres
+      SERVICE_OPTS: >
+        -Djavax.jdo.option.ConnectionURL=jdbc:postgresql://metastore-db:5432/metastore
+        -Djavax.jdo.option.ConnectionDriverName=org.postgresql.Driver
+        -Djavax.jdo.option.ConnectionUserName=hive
+        -Djavax.jdo.option.ConnectionPassword=hive
+      HIVE_AUX_JARS_PATH: /opt/hive/aux/postgresql.jar   
+    volumes:
+      - ./hive-lib/postgresql.jar:/opt/hive/aux/postgresql.jar:ro  
+    depends_on:
+      - metastore-db
+    ports:
+      - "9083:9083"
+    command: >
+      bash -lc "
+        /opt/hive/bin/schematool -dbType postgres -initSchema || true;
+        /opt/hive/bin/hive --service metastore
+      "
+    restart: unless-stopped
+
+  trino:
+    image: trinodb/trino:451
+    container_name: trino
+    ports:
+      - "8088:8080"
+    volumes:
+      - ./trino/etc:/etc/trino:ro
+    depends_on:
+      - hive-metastore
+    restart: unless-stopped
+
+volumes:
+  metastore_db_data:

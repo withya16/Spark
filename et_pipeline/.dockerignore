@@ -1,0 +1,26 @@
+# data / runtime
+minio-data/
+checkpoints/
+*.checkpoint
+*.log
+
+# git
+.git/
+.gitignore
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# mac/windows
+.DS_Store
+Thumbs.db
+
+# misc
+*.parquet
+*.json
+*.csv

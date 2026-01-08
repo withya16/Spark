@@ -1,0 +1,85 @@
+{
+    "title": "Service & Business Monitoring",
+    "uid": "service_monitoring_001",
+    "panels": [
+      {
+        "title": "1. Server Health (Requests & Error Rate)",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+        "targets": [
+          {
+            "query": "SELECT minute AS time, total_requests, error_rate * 100 AS \"Error Rate\" FROM logs.metrics_server_health_minutely WHERE $__timeFilter(minute) ORDER BY time ASC",
+            "format": "time_series"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": { "drawStyle": "line", "lineInterpolation": "smooth" },
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "title": "2. Top Endpoints by Requests",
+        "type": "barchart",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+        "targets": [
+          {
+            "query": "SELECT endpoint, sum(request_count) as total FROM logs.metrics_operational_hourly WHERE $__timeFilter(hour) GROUP BY endpoint ORDER BY total DESC LIMIT 10",
+            "format": "table"
+          }
+        ]
+      },
+      {
+        "title": "3. Daily Active Users (DAU)",
+        "type": "stat",
+        "gridPos": { "h": 4, "w": 6, "x": 0, "y": 8 },
+        "targets": [
+          {
+            "query": "SELECT date AS time, unique_users FROM logs.metrics_business_daily WHERE $__timeFilter(date) ORDER BY time DESC LIMIT 1",
+            "format": "table"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [{ "color": "green", "value": null }] } }
+        }
+      },
+      {
+        "title": "4. Conversion Funnel (Main -> Order)",
+        "type": "barchart",
+        "gridPos": { "h": 8, "w": 12, "x": 6, "y": 8 },
+        "targets": [
+          {
+            "query": "SELECT funnel, sum(main_users) as \"Main\", sum(cart_add_users) as \"Cart\", sum(order_users) as \"Order\" FROM logs.metrics_funnel_hourly WHERE $__timeFilter(hour_bucket) GROUP BY funnel",
+            "format": "table"
+          }
+        ]
+      },
+      {
+        "title": "5. Data Ingestion Delay",
+        "type": "gauge",
+        "gridPos": { "h": 4, "w": 6, "x": 18, "y": 8 },
+        "targets": [
+          {
+            "query": "SELECT hour AS time, avg_delay_seconds FROM logs.metrics_data_quality_hourly WHERE $__timeFilter(hour) ORDER BY hour DESC LIMIT 1",
+            "format": "table"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "thresholds": {
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 30 },
+                { "color": "red", "value": 60 }
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "schemaVersion": 38,
+    "timezone": "browser",
+    "refresh": "1m"
+  }

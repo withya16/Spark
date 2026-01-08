@@ -1,0 +1,61 @@
+# Git 관련
+.git
+.gitignore
+.gitattributes
+
+# IDE 설정
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# 문서 파일
+*.md
+README*
+CHANGELOG*
+LICENSE*
+
+# Docker 관련 (컨테이너 내부에서 불필요)
+docker-compose.yaml
+Dockerfile
+.dockerignore
+
+# 데이터 디렉토리 (로컬 데이터, 용량이 큼)
+minio-data/
+checkpoints/
+*.parquet
+*.json
+*.csv
+
+# Python 캐시
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# 환경 변수 파일
+.env
+.env.local
+.env.*.local
+
+# 로그 파일
+*.log
+logs/
+
+# 테스트 관련
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# 기타
+.DS_Store
+*.tmp
+*.bak
+*.swp
+
+# Grafana 설정 (별도 컨테이너이므로 Spark 컨테이너에 불필요)
+grafana/
+

@@ -9,7 +9,7 @@ from pyspark.sql.functions import (
 )
 from pyspark.sql.types import (
     StringType, StructType, StructField,
-    LongType, IntegerType, DoubleType
+    LongType, IntegerType, TimestampType
 )
 
 def normalize_path(path: str):
@@ -39,7 +39,7 @@ def main():
     CLICKHOUSE_HTTP_PORT = os.getenv("CLICKHOUSE_HTTP_PORT", os.getenv("CLICKHOUSE_PORT", "8123"))
     CLICKHOUSE_DB = os.getenv("CLICKHOUSE_DB", "logs")
     CLICKHOUSE_USER = os.getenv("CLICKHOUSE_USER", "default")
-    CLICKHOUSE_PASSWORD = os.getenv("CLICKHOUSE_PASSWORD", "")
+    CLICKHOUSE_PASSWORD = os.getenv("CLICKHOUSE_PASSWORD", "backtoeng")
 
     SPARK_BINARY_VERSION = "3.5"
     SCALA_BINARY_VERSION = os.getenv("SCALA_BINARY_VERSION", "2.12")
@@ -91,10 +91,14 @@ def main():
         StructField("status", StringType(), True),
         StructField("is_failed", IntegerType(), True),
         StructField("event_type", StringType(), True),
-        StructField("user_id", LongType(), True),
+        StructField("user_id", IntegerType(), True),
         StructField("endpoint", StringType(), True),
         StructField("action_type", StringType(), True),
-        StructField("event_time", DoubleType(), True),
+        StructField("event_time", TimestampType(), True),
+        StructField("year", IntegerType(), True),
+        StructField("month", IntegerType(), True),
+        StructField("day", IntegerType(), True),
+        StructField("hour", IntegerType(), True),
     ])
 
     silver_df = (
@@ -111,7 +115,7 @@ def main():
         .withColumn("http_method", when(col("http_method") == "", lit(None)).otherwise(col("http_method")))
         .withColumn("status", when(col("status") == "", lit(None)).otherwise(col("status")))
         .withColumn("is_failed", when(col("status") == lit("FAILED"), lit(1)).otherwise(lit(0)).cast("int"))
-        .withColumn("event_ts", expr("timestamp_millis(cast(event_time as bigint))"))
+        .withColumn("event_ts", col("event_time"))
         .withColumn("collected_time", current_timestamp())
         .withColumn("endpoint_canon", normalize_path_udf(col("endpoint")))
         .withColumn("session_id", col("user_id").cast(StringType()))
@@ -179,7 +183,7 @@ def main():
                 )
             )
 
-            # 3) 사용자 행동 및 이탈 (일별) - Window 함수 사용하여 Ambiguous Error 해결
+            # 3) 사용자 행동 및 이탈 (일별)
             action_daily = (
                 df.groupBy("date_bucket", "event_type", "action_type")
                 .agg(

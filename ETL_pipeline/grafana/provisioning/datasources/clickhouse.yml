@@ -7,7 +7,7 @@ datasources:
     url: http://clickhouse:8123
     database: logs
     user: default
-    password: ""
+    password: backtoeng
     isDefault: true
     jsonData:
       defaultDatabase: logs

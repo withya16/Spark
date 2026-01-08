@@ -112,7 +112,7 @@ services:
       CLICKHOUSE_PORT: 8123
       CLICKHOUSE_DB: logs
       CLICKHOUSE_USER: default
-      CLICKHOUSE_PASSWORD: "backtoeng"
+      CLICKHOUSE_PASSWORD: backtoeng
     command: ["python3", "clickhouse_gold_connector.py"]
     ports:
       - "4042:4040"

@@ -1,0 +1,660 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 5,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "PDEE91DDB90597936"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          },
+          "mappings": [],
+          "min": -2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "builderOptions": {
+            "aggregates": [],
+            "columns": [
+              {
+                "alias": "total_requests",
+                "custom": false,
+                "name": "total_requests",
+                "type": "UInt64"
+              },
+              {
+                "alias": "error_requests",
+                "custom": false,
+                "name": "error_requests",
+                "type": "UInt64"
+              },
+              {
+                "hint": "time",
+                "name": "minute",
+                "type": "DateTime"
+              }
+            ],
+            "database": "logs",
+            "filters": [
+              {
+                "condition": "AND",
+                "filterType": "custom",
+                "hint": "time",
+                "key": "",
+                "operator": "WITH IN DASHBOARD TIME RANGE",
+                "type": "datetime"
+              }
+            ],
+            "groupBy": [],
+            "limit": 1000,
+            "meta": {},
+            "mode": "aggregate",
+            "orderBy": [
+              {
+                "default": true,
+                "dir": "ASC",
+                "hint": "time",
+                "name": ""
+              }
+            ],
+            "queryType": "timeseries",
+            "table": "metrics_server_health_minutely"
+          },
+          "editorType": "builder",
+          "format": 0,
+          "pluginVersion": "4.11.4",
+          "query": "SELECT minute AS time, total_requests, error_rate * 100 AS \"Error Rate\" FROM logs.metrics_server_health_minutely WHERE $__timeFilter(minute) ORDER BY time ASC",
+          "rawSql": "SELECT minute as \"time\", total_requests, error_requests FROM \"logs\".\"metrics_server_health_minutely\" WHERE ( time >= $__fromTime AND time <= $__toTime ) ORDER BY time ASC LIMIT 1000",
+          "refId": "A"
+        }
+      ],
+      "title": "1. Server Health (Requests & Error Rate)",
+      "type": "histogram"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "PDEE91DDB90597936"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "builderOptions": {
+            "aggregates": [],
+            "columns": [
+              {
+                "alias": "request_count",
+                "custom": false,
+                "name": "request_count",
+                "type": "UInt64"
+              },
+              {
+                "hint": "time",
+                "name": "hour",
+                "type": "DateTime"
+              }
+            ],
+            "database": "logs",
+            "filters": [],
+            "groupBy": [],
+            "limit": 1000,
+            "meta": {},
+            "mode": "aggregate",
+            "orderBy": [
+              {
+                "default": true,
+                "dir": "ASC",
+                "hint": "time",
+                "name": ""
+              }
+            ],
+            "queryType": "timeseries",
+            "table": "metrics_operational_hourly"
+          },
+          "editorType": "builder",
+          "format": 0,
+          "pluginVersion": "4.11.4",
+          "query": "SELECT endpoint, sum(request_count) as total FROM logs.metrics_operational_hourly WHERE $__timeFilter(hour) GROUP BY endpoint ORDER BY total DESC LIMIT 10",
+          "rawSql": "SELECT hour as \"time\", request_count FROM \"logs\".\"metrics_operational_hourly\" ORDER BY time ASC LIMIT 1000",
+          "refId": "A"
+        }
+      ],
+      "title": "2. Top Endpoints by Requests",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              },
+              {
+                "color": "#EAB839",
+                "value": 150
+              },
+              {
+                "color": "green",
+                "value": 200
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto",
+        "text": {}
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "builderOptions": {
+            "aggregates": [],
+            "columns": [
+              {
+                "alias": "unique_users",
+                "custom": false,
+                "name": "unique_users",
+                "type": "UInt64"
+              },
+              {
+                "hint": "time",
+                "name": "date",
+                "type": "Date"
+              }
+            ],
+            "database": "logs",
+            "filters": [],
+            "groupBy": [],
+            "limit": 1000,
+            "meta": {},
+            "mode": "aggregate",
+            "orderBy": [
+              {
+                "default": true,
+                "dir": "ASC",
+                "hint": "time",
+                "name": ""
+              }
+            ],
+            "queryType": "timeseries",
+            "table": "metrics_business_daily"
+          },
+          "editorType": "builder",
+          "format": 0,
+          "pluginVersion": "4.11.4",
+          "query": "SELECT date AS time, unique_users FROM logs.metrics_business_daily WHERE $__timeFilter(date) ORDER BY time DESC LIMIT 1",
+          "rawSql": "SELECT date as \"time\", unique_users FROM \"logs\".\"metrics_business_daily\" ORDER BY time ASC LIMIT 1000",
+          "refId": "A"
+        }
+      ],
+      "title": "3. Daily Active Users (DAU)",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "PDEE91DDB90597936"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 10
+              },
+              {
+                "color": "#EAB839",
+                "value": 30
+              },
+              {
+                "color": "#EF843C",
+                "value": 50
+              },
+              {
+                "color": "#6ED0E0",
+                "value": 70
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 6,
+        "y": 8
+      },
+      "id": 4,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "normal",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "builderOptions": {
+            "aggregates": [],
+            "columns": [
+              {
+                "alias": "funnel",
+                "custom": false,
+                "name": "funnel",
+                "type": "String"
+              },
+              {
+                "alias": "main_users",
+                "custom": false,
+                "name": "main_users",
+                "type": "UInt64"
+              },
+              {
+                "alias": "cart_add_users",
+                "custom": false,
+                "name": "cart_add_users",
+                "type": "UInt64"
+              },
+              {
+                "alias": "order_users",
+                "custom": false,
+                "name": "order_users",
+                "type": "UInt64"
+              },
+              {
+                "hint": "time",
+                "name": "hour_bucket",
+                "type": "DateTime"
+              }
+            ],
+            "database": "logs",
+            "filters": [],
+            "groupBy": [],
+            "limit": 1000,
+            "meta": {},
+            "mode": "aggregate",
+            "orderBy": [
+              {
+                "default": true,
+                "dir": "ASC",
+                "hint": "time",
+                "name": ""
+              }
+            ],
+            "queryType": "timeseries",
+            "table": "metrics_funnel_hourly"
+          },
+          "editorType": "builder",
+          "format": 0,
+          "pluginVersion": "4.11.4",
+          "query": "SELECT funnel, sum(main_users) as \"Main\", sum(cart_add_users) as \"Cart\", sum(order_users) as \"Order\" FROM logs.metrics_funnel_hourly WHERE $__timeFilter(hour_bucket) GROUP BY funnel",
+          "rawSql": "SELECT hour_bucket as \"time\", funnel, main_users, cart_add_users, order_users FROM \"logs\".\"metrics_funnel_hourly\" ORDER BY time ASC LIMIT 1000",
+          "refId": "A"
+        }
+      ],
+      "title": "4. Conversion Funnel (Main -> Order)",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "PDEE91DDB90597936"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 10
+              },
+              {
+                "color": "red",
+                "value": 60
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 8
+      },
+      "id": 5,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "builderOptions": {
+            "aggregates": [],
+            "columns": [
+              {
+                "alias": "avg_delay_seconds",
+                "custom": false,
+                "name": "avg_delay_seconds",
+                "type": "Float64"
+              },
+              {
+                "hint": "time",
+                "name": "hour",
+                "type": "DateTime"
+              }
+            ],
+            "database": "logs",
+            "filters": [
+              {
+                "condition": "AND",
+                "filterType": "custom",
+                "hint": "time",
+                "key": "",
+                "operator": "WITH IN DASHBOARD TIME RANGE",
+                "type": "datetime"
+              }
+            ],
+            "groupBy": [],
+            "limit": 1000,
+            "meta": {},
+            "mode": "aggregate",
+            "orderBy": [
+              {
+                "default": true,
+                "dir": "ASC",
+                "hint": "time",
+                "name": ""
+              }
+            ],
+            "queryType": "timeseries",
+            "table": "metrics_data_quality_hourly"
+          },
+          "editorType": "builder",
+          "format": 0,
+          "pluginVersion": "4.11.4",
+          "query": "SELECT hour AS time, avg_delay_seconds FROM logs.metrics_data_quality_hourly WHERE $__timeFilter(hour) ORDER BY hour DESC LIMIT 1",
+          "rawSql": "SELECT hour as \"time\", avg_delay_seconds FROM \"logs\".\"metrics_data_quality_hourly\" WHERE ( time >= $__fromTime AND time <= $__toTime ) ORDER BY time ASC LIMIT 1000",
+          "refId": "A"
+        }
+      ],
+      "title": "5. Data Ingestion Delay",
+      "type": "gauge"
+    }
+  ],
+  "preload": false,
+  "refresh": "1m",
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Service & Business Monitoring",
+  "uid": "service_monitoring_001",
+  "version": 1
+}

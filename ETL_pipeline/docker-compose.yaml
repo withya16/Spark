@@ -112,7 +112,7 @@ services:
       CLICKHOUSE_PORT: 8123
       CLICKHOUSE_DB: logs
       CLICKHOUSE_USER: default
-      CLICKHOUSE_PASSWORD: backtoeng
+      CLICKHOUSE_PASSWORD: "backtoeng"
     command: ["python3", "clickhouse_gold_connector.py"]
     ports:
       - "4042:4040"
@@ -126,7 +126,7 @@ services:
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
-      GF_INSTALL_PLUGINS: vertamedia-clickhouse-datasource
+      GF_INSTALL_PLUGINS: "grafana-clickhouse-datasource"
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro

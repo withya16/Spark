@@ -24,7 +24,7 @@
     {
       "datasource": {
         "type": "grafana-clickhouse-datasource",
-        "uid": "PDEE91DDB90597936"
+        "uid": "clickhouse"
       },
       "fieldConfig": {
         "defaults": {
@@ -156,7 +156,7 @@
     {
       "datasource": {
         "type": "grafana-clickhouse-datasource",
-        "uid": "PDEE91DDB90597936"
+        "uid": "clickhouse"
       },
       "fieldConfig": {
         "defaults": {
@@ -384,7 +384,7 @@
     {
       "datasource": {
         "type": "grafana-clickhouse-datasource",
-        "uid": "PDEE91DDB90597936"
+        "uid": "clickhouse"
       },
       "fieldConfig": {
         "defaults": {
@@ -537,7 +537,7 @@
     {
       "datasource": {
         "type": "grafana-clickhouse-datasource",
-        "uid": "PDEE91DDB90597936"
+        "uid": "clickhouse"
       },
       "fieldConfig": {
         "defaults": {

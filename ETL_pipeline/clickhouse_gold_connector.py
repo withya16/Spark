@@ -258,7 +258,6 @@ def main():
             session_steps_alias = session_steps.alias("ss")
 
             f1_hourly = (
-
                 session_steps_alias
                 .withColumn("funnel", lit("F1_MAIN_CART_ADD_ORDER"))
                 .withColumn("reach_main", col("main_ts").isNotNull())
@@ -271,7 +270,17 @@ def main():
                     countDistinct(when(col("reach_order"), col("ss.user_id"))).alias("order_users"),
                 )
                 .withColumn("conv_main_to_order", when(col("main_users") > 0, col("order_users") / col("main_users")).otherwise(lit(0.0)))
+                # [수정 사항] hour_bucket 컬럼명을 hour로 변경하여 ClickHouse 스키마와 일치시킴
+                .select(
+                    col("hour_bucket").alias("hour"),
+                    "funnel",
+                    "main_users",
+                    "cart_add_users",
+                    "order_users",
+                    "conv_main_to_order"
+                )
             )
+
             # 5) 데이터 품질
             metrics_data_quality_hourly = (
                 df.groupBy("hour_bucket")
@@ -293,14 +302,14 @@ def main():
                 ("metrics_server_health_minutely", metrics_server_health_minutely),
                 ("metrics_operational_hourly", metrics_operational_hourly),
                 ("metrics_business_daily", metrics_business_daily),
-                ("metrics_funnel_hourly", f1_hourly), # 예시로 F1만 포함
+                ("metrics_funnel_hourly", f1_hourly),
                 ("metrics_data_quality_hourly", metrics_data_quality_hourly),
             ]
 
             for table_name, out_df in targets:
                 if not is_df_empty(out_df):
                     out_df.writeTo(f"clickhouse.{CLICKHOUSE_DB}.{table_name}").append()
-                    print(f"[batch={batch_id}] Wrote to {table_name}")
+                    print(f"[batch={batch_id}] Successfully wrote to {table_name}")
 
         except Exception as e:
             print(f"[batch={batch_id}] Error: {e}")

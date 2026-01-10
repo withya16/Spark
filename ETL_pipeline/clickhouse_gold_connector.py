@@ -270,9 +270,8 @@ def main():
                     countDistinct(when(col("reach_order"), col("ss.user_id"))).alias("order_users"),
                 )
                 .withColumn("conv_main_to_order", when(col("main_users") > 0, col("order_users") / col("main_users")).otherwise(lit(0.0)))
-                # [수정 사항] hour_bucket 컬럼명을 hour로 변경하여 ClickHouse 스키마와 일치시킴
                 .select(
-                    col("hour_bucket").alias("hour"),
+                    "hour_bucket",
                     "funnel",
                     "main_users",
                     "cart_add_users",

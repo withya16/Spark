@@ -151,7 +151,7 @@
         }
       ],
       "title": "1. Server Health (Requests & Error Rate)",
-      "type": "histogram"
+      "type": "timeseries"
     },
     {
       "datasource": {

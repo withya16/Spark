@@ -150,7 +150,7 @@
           "refId": "A"
         }
       ],
-      "title": "1. Server Health (Requests & Error Rate)",
+      "title": "1. 서버 상태 (Requests & Error Rate)",
       "type": "timeseries"
     },
     {
@@ -164,11 +164,11 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
+            "axisBorderShow": true,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
-            "axisPlacement": "auto",
+            "axisPlacement": "bottom",
             "fillOpacity": 80,
             "gradientMode": "none",
             "hideFrom": {
@@ -199,7 +199,55 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "endpoint"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": ""
+              },
+              {
+                "id": "custom.width",
+                "value": 200
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#73BF69",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "bottom"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Request Count"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 90
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -209,23 +257,23 @@
       },
       "id": 2,
       "options": {
-        "barRadius": 0,
-        "barWidth": 0.97,
-        "fullHighlight": false,
-        "groupWidth": 0.7,
+        "barRadius": 4,
+        "barWidth": 0.9,
+        "fullHighlight": true,
+        "groupWidth": 0.85,
         "legend": {
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
-        "orientation": "auto",
-        "showValue": "auto",
+        "orientation": "horizontal",
+        "showValue": "always",
         "stacking": "none",
         "tooltip": {
           "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
+          "mode": "multi",
+          "sort": "desc"
         },
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
@@ -262,18 +310,18 @@
                 "name": ""
               }
             ],
-            "queryType": "timeseries",
+            "queryType": "table",
             "table": "metrics_operational_hourly"
           },
           "editorType": "builder",
-          "format": 0,
+          "format": 1,
           "pluginVersion": "4.11.4",
           "query": "SELECT endpoint, sum(request_count) as total FROM logs.metrics_operational_hourly WHERE $__timeFilter(hour) GROUP BY endpoint ORDER BY total DESC LIMIT 10",
-          "rawSql": "SELECT hour as \"time\", request_count FROM \"logs\".\"metrics_operational_hourly\" ORDER BY time ASC LIMIT 1000",
+          "rawSql": "SELECT endpoint, sum(request_count) as total FROM logs.metrics_operational_hourly WHERE $__timeFilter(hour) GROUP BY endpoint ORDER BY total DESC LIMIT 10",
           "refId": "A"
         }
       ],
-      "title": "2. Top Endpoints by Requests",
+      "title": "2. 엔드포인트별 요청 수 (Top Endpoints)",
       "type": "barchart"
     },
     {
@@ -292,19 +340,19 @@
             "steps": [
               {
                 "color": "blue",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              },
-              {
-                "color": "#EAB839",
-                "value": 150
+                "value": null
               },
               {
                 "color": "green",
-                "value": 200
+                "value": 100
+              },
+              {
+                "color": "#EAB839",
+                "value": 500
+              },
+              {
+                "color": "red",
+                "value": 1000
               }
             ]
           },
@@ -320,8 +368,9 @@
       },
       "id": 3,
       "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -330,10 +379,7 @@
           "fields": "",
           "values": false
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "sizing": "auto",
-        "text": {}
+        "textMode": "auto"
       },
       "pluginVersion": "12.3.1",
       "targets": [
@@ -373,13 +419,13 @@
           "editorType": "builder",
           "format": 0,
           "pluginVersion": "4.11.4",
-          "query": "SELECT date AS time, unique_users FROM logs.metrics_business_daily WHERE $__timeFilter(date) ORDER BY time DESC LIMIT 1",
-          "rawSql": "SELECT date as \"time\", unique_users FROM \"logs\".\"metrics_business_daily\" ORDER BY time ASC LIMIT 1000",
+          "query": "SELECT date AS time, unique_users FROM logs.metrics_business_daily WHERE $__timeFilter(date) ORDER BY time ASC",
+          "rawSql": "SELECT date as \"time\", unique_users FROM \"logs\".\"metrics_business_daily\" WHERE $__timeFilter(date) ORDER BY time ASC",
           "refId": "A"
         }
       ],
-      "title": "3. Daily Active Users (DAU)",
-      "type": "gauge"
+      "title": "3. 일일 활성 사용자 (DAU)",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -389,7 +435,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
           "custom": {
             "axisBorderShow": false,
@@ -404,7 +450,7 @@
               "tooltip": false,
               "viz": false
             },
-            "lineWidth": 1,
+            "lineWidth": 2,
             "scaleDistribution": {
               "type": "linear"
             },
@@ -414,30 +460,15 @@
           },
           "mappings": [],
           "thresholds": {
-            "mode": "percentage",
+            "mode": "absolute",
             "steps": [
               {
                 "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 10
-              },
-              {
-                "color": "#EAB839",
-                "value": 30
-              },
-              {
-                "color": "#EF843C",
-                "value": 50
-              },
-              {
-                "color": "#6ED0E0",
-                "value": 70
+                "value": null
               }
             ]
-          }
+          },
+          "unit": "short"
         },
         "overrides": []
       },
@@ -449,26 +480,16 @@
       },
       "id": 4,
       "options": {
-        "barRadius": 0,
-        "barWidth": 0.97,
-        "fullHighlight": false,
-        "groupWidth": 0.7,
         "legend": {
           "calcs": [],
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
         },
-        "orientation": "horizontal",
-        "showValue": "auto",
-        "stacking": "normal",
         "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        },
-        "xTickLabelRotation": 0,
-        "xTickLabelSpacing": 0
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
       "pluginVersion": "12.3.1",
       "targets": [
@@ -526,13 +547,13 @@
           "editorType": "builder",
           "format": 0,
           "pluginVersion": "4.11.4",
-          "query": "SELECT funnel, sum(main_users) as \"Main\", sum(cart_add_users) as \"Cart\", sum(order_users) as \"Order\" FROM logs.metrics_funnel_daily WHERE $__timeFilter(date) GROUP BY funnel",
-          "rawSql": "SELECT date as \"time\", funnel, main_users, cart_add_users, order_users FROM \"logs\".\"metrics_funnel_daily\" ORDER BY time ASC LIMIT 1000",
+          "query": "SELECT date as time, sum(main_users) as \"Main\", sum(cart_add_users) as \"Cart\", sum(order_users) as \"Order\" FROM logs.metrics_funnel_daily WHERE $__timeFilter(date) GROUP BY date ORDER BY date ASC",
+          "rawSql": "SELECT date as \"time\", sum(main_users) as \"Main\", sum(cart_add_users) as \"Cart\", sum(order_users) as \"Order\" FROM \"logs\".\"metrics_funnel_daily\" WHERE $__timeFilter(date) GROUP BY date ORDER BY time ASC",
           "refId": "A"
         }
       ],
-      "title": "4. Conversion Funnel (Main -> Order)",
-      "type": "barchart"
+      "title": "4. 전환 퍼널 (Main -> Order)",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -541,13 +562,16 @@
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
-                "value": 0
+                "value": null
               },
               {
                 "color": "yellow",
@@ -633,11 +657,11 @@
           "format": 0,
           "pluginVersion": "4.11.4",
           "query": "SELECT hour AS time, avg_delay_seconds FROM logs.metrics_data_quality_hourly WHERE $__timeFilter(hour) ORDER BY hour DESC LIMIT 1",
-          "rawSql": "SELECT hour as \"time\", avg_delay_seconds FROM \"logs\".\"metrics_data_quality_hourly\" WHERE ( time >= $__fromTime AND time <= $__toTime ) ORDER BY time ASC LIMIT 1000",
+          "rawSql": "SELECT hour as \"time\", avg_delay_seconds FROM \"logs\".\"metrics_data_quality_hourly\" WHERE $__timeFilter(hour) ORDER BY time DESC LIMIT 1",
           "refId": "A"
         }
       ],
-      "title": "5. Data Ingestion Delay",
+      "title": "5. 데이터 수집 지연 (Ingestion Delay)",
       "type": "gauge"
     }
   ],
@@ -649,12 +673,12 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-3d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Service & Business Monitoring",
+  "title": "서비스 및 비즈니스 모니터링",
   "uid": "service_monitoring_001",
   "version": 1
 }

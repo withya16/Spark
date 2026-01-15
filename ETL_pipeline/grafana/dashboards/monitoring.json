@@ -626,9 +626,9 @@
           },
           "editorType": "builder",
           "format": 0,
-          "pluginVersion": "4.11.4",
+          "pluginVersion": "4.12.0",
           "query": "SELECT hour AS time, avg_delay_seconds FROM logs.metrics_data_quality_hourly WHERE $__timeFilter(hour) ORDER BY hour DESC LIMIT 1",
-          "rawSql": "SELECT hour as \"time\", avg_delay_seconds FROM \"logs\".\"metrics_data_quality_hourly\" WHERE $__timeFilter(hour) ORDER BY time DESC LIMIT 1",
+          "rawSql": "SELECT hour as \"time\", avg_delay_seconds FROM \"logs\".\"metrics_data_quality_hourly\" WHERE ( time >= $__fromTime AND time <= $__toTime ) ORDER BY time ASC LIMIT 1000",
           "refId": "A"
         }
       ],
@@ -644,12 +644,12 @@
     "list": []
   },
   "time": {
-    "from": "now-3d",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "서비스 및 비즈니스 모니터링",
   "uid": "service_monitoring_001",
-  "version": 23
+  "version": 30
 }

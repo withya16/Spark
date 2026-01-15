@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 5,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -32,6 +32,14 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 80,
             "gradientMode": "none",
             "hideFrom": {
@@ -39,10 +47,22 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
             "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
             "stacking": {
               "group": "A",
               "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
           "mappings": [],
@@ -164,66 +184,19 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": true,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "bottom",
-            "fillOpacity": 80,
-            "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
-            },
-            "lineWidth": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
             }
           },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
+          "mappings": []
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "endpoint"
-            },
-            "properties": [
-              {
-                "id": "custom.axisPlacement",
-                "value": "left"
-              },
-              {
-                "id": "custom.axisLabel",
-                "value": ""
-              },
-              {
-                "id": "custom.width",
-                "value": 200
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "total"
+              "options": "/cart"
             },
             "properties": [
               {
@@ -232,18 +205,66 @@
                   "fixedColor": "#73BF69",
                   "mode": "fixed"
                 }
-              },
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "/address/save"
+            },
+            "properties": [
               {
-                "id": "custom.axisPlacement",
-                "value": "bottom"
-              },
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F2CC0C",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "/search"
+            },
+            "properties": [
               {
-                "id": "custom.axisLabel",
-                "value": "Request Count"
-              },
+                "id": "color",
+                "value": {
+                  "fixedColor": "#5794F2",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "/main"
+            },
+            "properties": [
               {
-                "id": "custom.fillOpacity",
-                "value": 90
+                "id": "color",
+                "value": {
+                  "fixedColor": "#FF9830",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "/order"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F2495C",
+                  "mode": "fixed"
+                }
               }
             ]
           }
@@ -257,72 +278,47 @@
       },
       "id": 2,
       "options": {
-        "barRadius": 4,
-        "barWidth": 0.9,
-        "fullHighlight": true,
-        "groupWidth": 0.85,
+        "displayLabels": [
+          "name",
+          "percent"
+        ],
         "legend": {
           "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
         },
-        "orientation": "horizontal",
-        "showValue": "always",
-        "stacking": "none",
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^value$/",
+          "values": true
+        },
+        "sort": "desc",
         "tooltip": {
           "hideZeros": false,
-          "mode": "multi",
-          "sort": "desc"
-        },
-        "xTickLabelRotation": 0,
-        "xTickLabelSpacing": 0
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "pluginVersion": "12.3.1",
       "targets": [
         {
-          "builderOptions": {
-            "aggregates": [],
-            "columns": [
-              {
-                "alias": "request_count",
-                "custom": false,
-                "name": "request_count",
-                "type": "UInt64"
-              },
-              {
-                "hint": "time",
-                "name": "hour",
-                "type": "DateTime"
-              }
-            ],
-            "database": "logs",
-            "filters": [],
-            "groupBy": [],
-            "limit": 1000,
-            "meta": {},
-            "mode": "aggregate",
-            "orderBy": [
-              {
-                "default": true,
-                "dir": "ASC",
-                "hint": "time",
-                "name": ""
-              }
-            ],
-            "queryType": "table",
-            "table": "metrics_operational_hourly"
-          },
-          "editorType": "builder",
+          "editorType": "sql",
           "format": 1,
           "pluginVersion": "4.11.4",
-          "query": "SELECT endpoint, sum(request_count) as total FROM logs.metrics_operational_hourly WHERE $__timeFilter(hour) GROUP BY endpoint ORDER BY total DESC LIMIT 10",
-          "rawSql": "SELECT endpoint, sum(request_count) as total FROM logs.metrics_operational_hourly WHERE $__timeFilter(hour) GROUP BY endpoint ORDER BY total DESC LIMIT 10",
+          "rawSql": "SELECT endpoint, sum(request_count) as value FROM logs.metrics_operational_hourly GROUP BY endpoint ORDER BY value DESC LIMIT 5",
           "refId": "A"
         }
       ],
-      "title": "2. 엔드포인트별 요청 수 (Top Endpoints)",
-      "type": "barchart"
+      "title": "2. 엔드포인트별 요청 비율 (Endpoint Request Ratio)",
+      "type": "piechart"
     },
     {
       "datasource": {
@@ -340,19 +336,19 @@
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               },
               {
                 "color": "green",
-                "value": 100
+                "value": 5000
               },
               {
                 "color": "#EAB839",
-                "value": 500
+                "value": 10000
               },
               {
                 "color": "red",
-                "value": 1000
+                "value": 15000
               }
             ]
           },
@@ -372,6 +368,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -379,48 +376,17 @@
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
       "pluginVersion": "12.3.1",
       "targets": [
         {
-          "builderOptions": {
-            "aggregates": [],
-            "columns": [
-              {
-                "alias": "unique_users",
-                "custom": false,
-                "name": "unique_users",
-                "type": "UInt64"
-              },
-              {
-                "hint": "time",
-                "name": "date",
-                "type": "Date"
-              }
-            ],
-            "database": "logs",
-            "filters": [],
-            "groupBy": [],
-            "limit": 1000,
-            "meta": {},
-            "mode": "aggregate",
-            "orderBy": [
-              {
-                "default": true,
-                "dir": "ASC",
-                "hint": "time",
-                "name": ""
-              }
-            ],
-            "queryType": "timeseries",
-            "table": "metrics_business_daily"
-          },
-          "editorType": "builder",
-          "format": 0,
+          "editorType": "sql",
+          "format": 1,
           "pluginVersion": "4.11.4",
-          "query": "SELECT date AS time, unique_users FROM logs.metrics_business_daily WHERE $__timeFilter(date) ORDER BY time ASC",
-          "rawSql": "SELECT date as \"time\", unique_users FROM \"logs\".\"metrics_business_daily\" WHERE $__timeFilter(date) ORDER BY time ASC",
+          "rawSql": "SELECT max(unique_users) as DAU FROM logs.metrics_business_daily WHERE date = today()",
           "refId": "A"
         }
       ],
@@ -450,7 +416,7 @@
               "tooltip": false,
               "viz": false
             },
-            "lineWidth": 2,
+            "lineWidth": 1,
             "scaleDistribution": {
               "type": "linear"
             },
@@ -464,13 +430,59 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
           "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Main"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#73BF69",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Cart"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F2CC0C",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Order"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F2495C",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -480,80 +492,39 @@
       },
       "id": 4,
       "options": {
+        "barRadius": 0,
+        "barWidth": 0.8,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
         "legend": {
           "calcs": [],
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "normal",
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
-        }
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
       },
       "pluginVersion": "12.3.1",
       "targets": [
         {
-          "builderOptions": {
-            "aggregates": [],
-            "columns": [
-              {
-                "alias": "funnel",
-                "custom": false,
-                "name": "funnel",
-                "type": "String"
-              },
-              {
-                "alias": "main_users",
-                "custom": false,
-                "name": "main_users",
-                "type": "UInt64"
-              },
-              {
-                "alias": "cart_add_users",
-                "custom": false,
-                "name": "cart_add_users",
-                "type": "UInt64"
-              },
-              {
-                "alias": "order_users",
-                "custom": false,
-                "name": "order_users",
-                "type": "UInt64"
-              },
-              {
-                "hint": "time",
-                "name": "date",
-                "type": "Date"
-              }
-            ],
-            "database": "logs",
-            "filters": [],
-            "groupBy": [],
-            "limit": 1000,
-            "meta": {},
-            "mode": "aggregate",
-            "orderBy": [
-              {
-                "default": true,
-                "dir": "ASC",
-                "hint": "time",
-                "name": ""
-              }
-            ],
-            "queryType": "timeseries",
-            "table": "metrics_funnel_daily"
-          },
-          "editorType": "builder",
-          "format": 0,
+          "editorType": "sql",
+          "format": 1,
           "pluginVersion": "4.11.4",
-          "query": "SELECT date as time, sum(main_users) as \"Main\", sum(cart_add_users) as \"Cart\", sum(order_users) as \"Order\" FROM logs.metrics_funnel_daily WHERE $__timeFilter(date) GROUP BY date ORDER BY date ASC",
-          "rawSql": "SELECT date as \"time\", sum(main_users) as \"Main\", sum(cart_add_users) as \"Cart\", sum(order_users) as \"Order\" FROM \"logs\".\"metrics_funnel_daily\" WHERE $__timeFilter(date) GROUP BY date ORDER BY time ASC",
+          "rawSql": "SELECT toString(date) as label, sum(main_users) as Main, sum(cart_add_users) as Cart, sum(order_users) as \"Order\" FROM logs.metrics_funnel_daily GROUP BY date ORDER BY date",
           "refId": "A"
         }
       ],
       "title": "4. 전환 퍼널 (Main -> Order)",
-      "type": "timeseries"
+      "type": "barchart"
     },
     {
       "datasource": {
@@ -571,7 +542,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "yellow",
@@ -680,5 +651,5 @@
   "timezone": "browser",
   "title": "서비스 및 비즈니스 모니터링",
   "uid": "service_monitoring_001",
-  "version": 1
+  "version": 23
 }

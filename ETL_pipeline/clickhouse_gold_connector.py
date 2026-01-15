@@ -7,7 +7,6 @@ from pyspark.sql.functions import (
     count, sum as spark_sum, avg, countDistinct,
     expr, max as spark_max, min as spark_min, row_number
 )
-from pyspark.sql.streaming import Trigger
 from pyspark.sql.types import (
     StringType, StructType, StructField,
     LongType, IntegerType, TimestampType

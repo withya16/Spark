@@ -105,7 +105,7 @@ def main():
         spark.readStream
         .format("parquet")
         .schema(silver_schema)
-        .option("maxFilesPerTrigger", 10)
+        .option("maxFilesPerTrigger", 3)
         .load(silver_input)
     )
 
@@ -229,7 +229,7 @@ def main():
                 )
             )
 
-            # 4) 퍼널 (1시간 단위)
+            # 4) 퍼널 (일 단위)
             step_df = (
                 df.filter(col("user_id").isNotNull() & col("session_id").isNotNull())
                 .withColumn(
@@ -245,7 +245,7 @@ def main():
             )
 
             session_steps = (
-                step_df.groupBy("hour_bucket", "session_id", "user_id")
+                step_df.groupBy("date_bucket", "session_id", "user_id")
                 .agg(
                     spark_min(when(col("step") == "MAIN", col("event_ts"))).alias("main_ts"),
                     spark_min(when(col("step") == "BROWSE", col("event_ts"))).alias("browse_ts"),
@@ -257,13 +257,13 @@ def main():
 
             session_steps_alias = session_steps.alias("ss")
 
-            f1_hourly = (
+            f1_daily = (
                 session_steps_alias
                 .withColumn("funnel", lit("F1_MAIN_CART_ADD_ORDER"))
                 .withColumn("reach_main", col("main_ts").isNotNull())
-                .withColumn("reach_cart_add", col("cart_add_ts").isNotNull() & (col("cart_add_ts") >= col("main_ts")))
-                .withColumn("reach_order", col("order_ts").isNotNull() & col("cart_add_ts").isNotNull() & (col("order_ts") >= col("cart_add_ts")))
-                .groupBy("hour_bucket", "funnel")
+                .withColumn("reach_cart_add", col("cart_add_ts").isNotNull() & col("main_ts").isNotNull() & (col("cart_add_ts") >= col("main_ts")))
+                .withColumn("reach_order", col("order_ts").isNotNull() & col("cart_add_ts").isNotNull() & col("main_ts").isNotNull() & (col("order_ts") >= col("cart_add_ts")))
+                .groupBy("date_bucket", "funnel")
                 .agg(
                     countDistinct(when(col("reach_main"), col("ss.user_id"))).alias("main_users"),
                     countDistinct(when(col("reach_cart_add"), col("ss.user_id"))).alias("cart_add_users"),
@@ -271,7 +271,7 @@ def main():
                 )
                 .withColumn("conv_main_to_order", when(col("main_users") > 0, col("order_users") / col("main_users")).otherwise(lit(0.0)))
                 .select(
-                    "hour_bucket",
+                    col("date_bucket").alias("date"),
                     "funnel",
                     "main_users",
                     "cart_add_users",
@@ -301,7 +301,7 @@ def main():
                 ("metrics_server_health_minutely", metrics_server_health_minutely),
                 ("metrics_operational_hourly", metrics_operational_hourly),
                 ("metrics_business_daily", metrics_business_daily),
-                ("metrics_funnel_hourly", f1_hourly),
+                ("metrics_funnel_daily", f1_daily),
                 ("metrics_data_quality_hourly", metrics_data_quality_hourly),
             ]
 

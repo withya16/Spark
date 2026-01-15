@@ -502,8 +502,8 @@
               },
               {
                 "hint": "time",
-                "name": "hour_bucket",
-                "type": "DateTime"
+                "name": "date",
+                "type": "Date"
               }
             ],
             "database": "logs",
@@ -521,13 +521,13 @@
               }
             ],
             "queryType": "timeseries",
-            "table": "metrics_funnel_hourly"
+            "table": "metrics_funnel_daily"
           },
           "editorType": "builder",
           "format": 0,
           "pluginVersion": "4.11.4",
-          "query": "SELECT funnel, sum(main_users) as \"Main\", sum(cart_add_users) as \"Cart\", sum(order_users) as \"Order\" FROM logs.metrics_funnel_hourly WHERE $__timeFilter(hour_bucket) GROUP BY funnel",
-          "rawSql": "SELECT hour_bucket as \"time\", funnel, main_users, cart_add_users, order_users FROM \"logs\".\"metrics_funnel_hourly\" ORDER BY time ASC LIMIT 1000",
+          "query": "SELECT funnel, sum(main_users) as \"Main\", sum(cart_add_users) as \"Cart\", sum(order_users) as \"Order\" FROM logs.metrics_funnel_daily WHERE $__timeFilter(date) GROUP BY funnel",
+          "rawSql": "SELECT date as \"time\", funnel, main_users, cart_add_users, order_users FROM \"logs\".\"metrics_funnel_daily\" ORDER BY time ASC LIMIT 1000",
           "refId": "A"
         }
       ],

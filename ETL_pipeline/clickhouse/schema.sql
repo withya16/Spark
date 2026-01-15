@@ -48,10 +48,10 @@ CREATE TABLE IF NOT EXISTS logs.metrics_business_daily
 ENGINE = MergeTree()
 ORDER BY (date, metric_kind);
 
--- 4) 퍼널 분석 (시간 단위)
-CREATE TABLE IF NOT EXISTS logs.metrics_funnel_hourly
+-- 4) 퍼널 분석 (일 단위)
+CREATE TABLE IF NOT EXISTS logs.metrics_funnel_daily
 (
-    hour_bucket DateTime,
+    date Date,
     funnel String,
     main_users UInt64,
     cart_add_users UInt64,
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS logs.metrics_funnel_hourly
     conv_main_to_order Float64
 )
 ENGINE = MergeTree()
-ORDER BY (hour_bucket, funnel);
+ORDER BY (date, funnel);
 
 -- 5) 데이터 품질 (시간 단위)
 CREATE TABLE IF NOT EXISTS logs.metrics_data_quality_hourly

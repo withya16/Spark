@@ -7,6 +7,7 @@ from pyspark.sql.functions import (
     count, sum as spark_sum, avg, countDistinct,
     expr, max as spark_max, min as spark_min, row_number
 )
+from pyspark.sql.streaming import Trigger
 from pyspark.sql.types import (
     StringType, StructType, StructField,
     LongType, IntegerType, TimestampType
@@ -105,7 +106,7 @@ def main():
         spark.readStream
         .format("parquet")
         .schema(silver_schema)
-        .option("maxFilesPerTrigger", 3)
+        .option("maxFilesPerTrigger", 10)
         .load(silver_input)
     )
 
@@ -319,6 +320,7 @@ def main():
         processed_df.writeStream
         .foreachBatch(write_all_metrics)
         .option("checkpointLocation", gold_checkpoint)
+        .trigger(processingTime="1 minute")
         .start()
     )
 

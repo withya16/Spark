@@ -106,6 +106,7 @@ def main():
         .format("parquet")
         .schema(silver_schema)
         .option("maxFilesPerTrigger", 10)
+        .option("ignoreMissingFiles", "true")
         .load(silver_input)
     )
 
